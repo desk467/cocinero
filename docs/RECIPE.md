@@ -21,4 +21,4 @@ recipe:
       execute: poetry install
 ```
 
-~ em deenvolvimento ~
+~ em desenvolvimento ~
