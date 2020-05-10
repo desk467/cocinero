@@ -1,4 +1,4 @@
-# cocinero
+# 🍳 cocinero
 
 cocinero é um utilitário escrito em Python para facilitar a geração de projetos novos a partir de boilerplates. Este projeto permite:
 
