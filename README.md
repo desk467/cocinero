@@ -44,4 +44,4 @@ Veja como contribuir [clicando aqui](docs/CONTRIBUTING.md).
 
 ## Licença
 
-Este projeto utiliza a licença GPL v3. Para ver mais sobre a licença, [clique aqui](docs/LICENSE.md)
+Este projeto utiliza a licença GPL v3. Para ver mais sobre a licença, [clique aqui](docs/LICENSE)
