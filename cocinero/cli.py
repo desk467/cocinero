@@ -1,11 +1,10 @@
-import uuid
 import click
-import subprocess
-import yaml
-import shutil
 import os
 
 import plugins
+import repo
+import parser
+from requirements import check_requirement
 
 
 @click.group()
@@ -14,30 +13,24 @@ def cli():
 
 
 @click.command()
-@click.argument('repo')
+@click.argument('repo_url')
 @click.argument('project_name', default='my_awesome_project')
-def cook(repo, project_name):
+def cook(repo_url, project_name):
     '''
     Gera um novo projeto a partir de um template
     '''
 
-    # Clone
-    repo_destination_name = f'repo-{uuid.uuid4()}'
-    command = f'git clone {repo} /tmp/{repo_destination_name}'
-
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output, error = process.communicate()
+    repo_tmp_path = repo.clone(repo_url)
 
     # Parse recipe
-    repo_tmp_path = f'/tmp/{repo_destination_name}'
     with open(f'{repo_tmp_path}/cocinero-recipe.yml', 'r') as recipe_file:
-        recipe = yaml.load(recipe_file, Loader=yaml.BaseLoader).get('recipe')
+        recipe = parser.parse_recipe(recipe_file, project_name)
 
         requirements, steps = recipe.get(
             'requirements', []), recipe.get('steps', [])
 
         for requirement in requirements:
-            print(requirement)
+            check_requirement(requirement)
 
         for step in steps:
             plugin_name = [key for key in step.keys() if key != 'name'][0]
@@ -52,8 +45,11 @@ def cook(repo, project_name):
             else:
                 plugin_func(project_name=project_name,
                             repo_tmp_path=repo_tmp_path, plugin_attr=plugin_attrs)
+    # Commit
+    repo.commit_changes(repo_tmp_path, project_name)
+
     # Move
-    shutil.move(repo_tmp_path, os.path.join(os.getcwd(), project_name))
+    repo.move_repo(repo_tmp_path, os.path.join(os.getcwd(), project_name))
 
 
 cli.add_command(cook)

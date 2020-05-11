@@ -15,13 +15,11 @@ def replace(*args, **kwargs):
     from_string = kwargs.get('from')
     to_string = kwargs.get('to')
     paths = kwargs.get('paths')
-    project_name = kwargs.get('project_name')
 
     for path in paths:
         absolute_path = os.path.join(repo_tmp_path, path)
         with open(absolute_path, 'r') as file:
-            new_content = file.read().replace(
-                from_string, to_string.replace('$name', project_name))
+            new_content = file.read().replace(from_string, to_string)
 
         with open(absolute_path, 'w') as file:
             file.write(new_content)
