@@ -6,9 +6,15 @@ authors = ["Ricardo Gomes <desk467@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+click = "^7.1.2"
+colorama = "^0.4.3"
+PyYAML = "^5.3.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+flake8 = "^3.7.9"
+autopep8 = "^1.5.2"
+rope = "^0.17.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
