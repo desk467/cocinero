@@ -10,17 +10,23 @@ __author__ = 'Ricardo Gomes'
 import os
 
 
-def rename(*args, **kwargs):
-    from_string = kwargs.get('from')
-    to_string = kwargs.get('to')
-    paths = kwargs.get('paths')
-    repo_tmp_path = kwargs.get('repo_tmp_path')
-    project_name = kwargs.get('project_name')
+def rename(step, repository):
+    '''
+    `rename` renomeia arquivos dentro de um repositório.
+    '''
+    from_string = step.args.get('from')
+    to_string = step.args.get('to')
 
-    for path in paths:
-        absolute_path = os.path.join(repo_tmp_path, path)
-        new_file = path.replace(
-            from_string, to_string.replace('$name', project_name))
+    try:
+        for path_to_rename in step.args.get('paths'):
+            absolute_path = os.path.join(repository.directory, path_to_rename)
+            new_filename = path_to_rename.replace(from_string, to_string)
 
-        new_absolute_path = os.path.join(repo_tmp_path, new_file)
-        os.rename(absolute_path, new_absolute_path)
+            new_absolute_path = os.path.join(
+                repository.directory, new_filename)
+
+            os.rename(absolute_path, new_absolute_path)
+
+        return True
+    except:
+        return False

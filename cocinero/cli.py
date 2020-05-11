@@ -1,11 +1,10 @@
-import uuid
 import click
-import subprocess
-import yaml
-import shutil
 import os
-
-import plugins
+import sys
+from cocinero.repository import clone_repository
+from cocinero.recipe import parse_recipe, is_requirement_satisfied, execute_step
+from cocinero.vars import get_cocinero_vars
+from rich.console import Console
 
 
 @click.group()
@@ -14,46 +13,54 @@ def cli():
 
 
 @click.command()
-@click.argument('repo')
+@click.argument('repository_url')
 @click.argument('project_name', default='my_awesome_project')
-def cook(repo, project_name):
+def cook(repository_url, project_name):
     '''
     Gera um novo projeto a partir de um template
     '''
 
-    # Clone
-    repo_destination_name = f'repo-{uuid.uuid4()}'
-    command = f'git clone {repo} /tmp/{repo_destination_name}'
+    os.environ['COCINERO_REPOSITORY_URL'] = repository_url
+    os.environ['COCINERO_PROJECT_NAME'] = project_name
 
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output, error = process.communicate()
+    console = Console()
 
-    # Parse recipe
-    repo_tmp_path = f'/tmp/{repo_destination_name}'
-    with open(f'{repo_tmp_path}/cocinero-recipe.yml', 'r') as recipe_file:
-        recipe = yaml.load(recipe_file, Loader=yaml.BaseLoader).get('recipe')
+    console.print(
+        f":egg: cocinero {get_cocinero_vars().get('version')}\n", style='bold green')
 
-        requirements, steps = recipe.get(
-            'requirements', []), recipe.get('steps', [])
+    console.print('-> Clonando repositório')
 
-        for requirement in requirements:
-            print(requirement)
+    repository = clone_repository(repository_url, project_name)
 
-        for step in steps:
-            plugin_name = [key for key in step.keys() if key != 'name'][0]
-            plugin_attrs = {key: val for key,
-                            val in step.items() if key == plugin_name}.get(plugin_name)
+    console.print('-> Carregando recipe')
+    recipe = parse_recipe(repository)
 
-            plugin_func = getattr(plugins, plugin_name)
+    console.print('\n-> Verificando requisitos')
+    for requirement in recipe.requirements:
+        if is_requirement_satisfied(requirement):
+            console.print(
+                f'  - Requisito [bold]{requirement.name}[/bold] satisfeito')
+        else:
+            console.print(
+                f'  - Requisito [bold]{requirement.name}[/bold] NÃO SATISFEITO. Abortar.',
+                style='red'
+            )
+            sys.exit(-1)
 
-            if type(plugin_attrs) == dict:
-                plugin_func(project_name=project_name,
-                            repo_tmp_path=repo_tmp_path, **plugin_attrs)
-            else:
-                plugin_func(project_name=project_name,
-                            repo_tmp_path=repo_tmp_path, plugin_attr=plugin_attrs)
-    # Move
-    shutil.move(repo_tmp_path, os.path.join(os.getcwd(), project_name))
+    console.print('\n-> Executando passos')
+    for index, step in enumerate(recipe.steps):
+        console.print(f'  - [bold]Passo {index+1}:[/bold] {step.name}')
+        execute_step(step, repository)
+
+    console.print('\n-> Apagando recipe')
+    repository.remove_recipe()
+
+    console.print('\n-> Commitando mudanças no repositório')
+    repository.commit_changes()
+
+    repository.move_to_cwd()
+
+    console.print('\n:sparkles: Pronto. :sparkles:')
 
 
 cli.add_command(cook)

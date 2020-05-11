@@ -1,20 +1,36 @@
 [tool.poetry]
 name = "cocinero"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "Um utilitário em Python para criar projetos a partir de templates"
+license = "GPL-3.0-only"
 authors = ["Ricardo Gomes <desk467@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/desk467/cocinero"
+keywords = ["devops", "automation", "boilerplate"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development",
+    "Topic :: Utilities"
+]
+
+[tool.poetry.scripts]
+cocinero = "cocinero:cli"
 
 [tool.poetry.dependencies]
 python = "^3.8"
 click = "^7.1.2"
 colorama = "^0.4.3"
 PyYAML = "^5.3.1"
+Jinja2 = "^2.11.2"
+rich = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 flake8 = "^3.7.9"
 autopep8 = "^1.5.2"
 rope = "^0.17.0"
+mypy = "^0.770"
 
 [build-system]
 requires = ["poetry>=0.12"]
