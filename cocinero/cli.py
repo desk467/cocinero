@@ -30,7 +30,7 @@ def cook(repository_url, project_name):
 
     console.print('-> Clonando repositório')
 
-    repository = clone_repository(repository_url)
+    repository = clone_repository(repository_url, project_name)
 
     console.print('-> Carregando recipe')
     recipe = parse_recipe(repository)
