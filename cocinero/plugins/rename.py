@@ -20,8 +20,8 @@ def rename(step, repository):
     try:
         for path_to_rename in step.args.get('paths'):
             absolute_path = os.path.join(repository.directory, path_to_rename)
-            new_file = path.replace(from_string, to_string)
-            os.rename(absolute_path, new_absolute_path)
+            new_file = path_to_rename.replace(from_string, to_string)
+            os.rename(absolute_path, new_file)
 
         return True
     except:
