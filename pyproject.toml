@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cocinero"
-version = "0.1.1"
+version = "0.1.2"
 description = "Um utilitário em Python para criar projetos a partir de templates"
 license = "GPL-3.0-only"
 authors = ["Ricardo Gomes <desk467@gmail.com>"]
@@ -13,6 +13,8 @@ classifiers = [
     "Topic :: Software Development",
     "Topic :: Utilities"
 ]
+
+include = ["docs/*"]
 
 [tool.poetry.scripts]
 cocinero = "cocinero:cli"
