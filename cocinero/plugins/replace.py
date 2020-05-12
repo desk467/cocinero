@@ -10,16 +10,24 @@ __author__ = 'Ricardo Gomes'
 import os
 
 
-def replace(*args, **kwargs):
-    repo_tmp_path = kwargs.get('repo_tmp_path')
-    from_string = kwargs.get('from')
-    to_string = kwargs.get('to')
-    paths = kwargs.get('paths')
+def replace(step, repository):
+    '''
+    `replace` altera o conteúdo dos arquivos, buscando por uma palavra
+    para alterar (normalmente o project_name)
+    '''
+    from_string = step.args.get('from')
+    to_string = step.args.get('to')
 
-    for path in paths:
-        absolute_path = os.path.join(repo_tmp_path, path)
-        with open(absolute_path, 'r') as file:
-            new_content = file.read().replace(from_string, to_string)
+    try:
+        for filepath_to_replace in step.args.get('paths'):
+            absolute_path = os.path.join(
+                repository.directory, filepath_to_replace)
+            with open(absolute_path, 'r') as file_to_change:
+                new_content = file_to_change.read().replace(from_string, to_string)
 
-        with open(absolute_path, 'w') as file:
-            file.write(new_content)
+            with open(absolute_path, 'w') as file_to_change:
+                file_to_change.write(new_content)
+
+        return True
+    except:
+        return False
