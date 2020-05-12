@@ -1,3 +1,9 @@
+'''
+execute.py
+
+Este plugin executa um comando arbitrário.
+'''
+
 __author__ = 'Ricardo Gomes'
 
 
