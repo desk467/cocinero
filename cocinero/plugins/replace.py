@@ -1,8 +1,7 @@
 '''
 replace.py
 
-Este plugin altera uma string dentro de um ou mais arquivos
-
+This plugin replaces a string from a file
 
 '''
 __author__ = 'Ricardo Gomes'
@@ -12,8 +11,7 @@ import os
 
 def replace(step, repository):
     '''
-    `replace` altera o conteúdo dos arquivos, buscando por uma palavra
-    para alterar (normalmente o project_name)
+    `replace` change content of a file, finding a string to replace
     '''
     from_string = step.args.get('from')
     to_string = step.args.get('to')

@@ -1,7 +1,7 @@
 '''
 rename.py
 
-Este plugin renomeia um ou mais arquivos
+This plugin renames one or more files
 
 
 '''
@@ -12,7 +12,7 @@ import os
 
 def rename(step, repository):
     '''
-    `rename` renomeia arquivos dentro de um repositório.
+    `rename` rename a list of files from repository
     '''
     from_string = step.args.get('from')
     to_string = step.args.get('to')

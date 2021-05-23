@@ -1,7 +1,7 @@
 '''
 execute.py
 
-Este plugin executa um comando arbitrário.
+This plugin executes an arbitrary command
 '''
 
 __author__ = 'Ricardo Gomes'
@@ -9,7 +9,7 @@ __author__ = 'Ricardo Gomes'
 
 def execute(steps, repository):
     '''
-    `execute` Executa um comando na pasta do repositório
+    `execute` Executes a command in repository folder
     @todo: Ajustar este plugin
     '''
     pass

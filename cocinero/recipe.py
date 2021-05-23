@@ -2,13 +2,11 @@ from typing import List
 from dataclasses import dataclass
 
 import os
-import json
 import yaml
 import jinja2
 
 from distutils.spawn import find_executable
 
-from cocinero.commands import exec_command
 from cocinero.repository import Repository
 from cocinero.vars import get_cocinero_vars
 from cocinero import plugins
@@ -17,9 +15,8 @@ from cocinero import plugins
 @dataclass
 class Requirement:
     '''
-    `Requirement` define um requisito necessário
-    instalado no dispositivo do usuário para que uma recipe
-    possa ser feita.
+    `Requirement` defines a requirement that must be installed
+    on the user's device so that he can execute a recipe.
     '''
 
     name: str
@@ -28,8 +25,7 @@ class Requirement:
 @dataclass
 class Step:
     '''
-    `Step` define um passo que será executado no `recipe`
-    para gerar o projeto do usuário corretamente.
+    `Step` defines a step that will be execute in a recipe.
     '''
     name: str
     plugin_name: str
@@ -39,8 +35,9 @@ class Step:
 @dataclass
 class Recipe:
     '''
-    `Recipe` é uma receita para a geração de um template.
-    Contém `requirements` e `steps`
+    `Recipe` is a class that defines a list of requirements
+    and a list of steps that will be executed to create a new
+    repository.
     '''
     requirements: List[Requirement]
     steps: List[Step]
@@ -48,7 +45,8 @@ class Recipe:
 
 def load_recipe_content_from(repository: Repository) -> str:
     '''
-    `load_recipe_content_from` abre o arquivo de recipe e retorna seu conteúdo.
+    `load_recipe_content_from` open cocinero-recipe.yml file,
+    returning its content.
     '''
     recipe_file = open(os.path.join(
         repository.directory, 'cocinero-recipe.yml'))
@@ -62,7 +60,7 @@ def load_recipe_content_from(repository: Repository) -> str:
 
 def compile_recipe_content(recipe_content: str) -> str:
     '''
-    `compile_recipe_content` compila o arquivo de recipe utilizando o Jinja2.
+    `compile_recipe_content` parses `recipe_content` using Jinja2.
     '''
     template = jinja2.Template(recipe_content)
     cocinero_vars = get_cocinero_vars()
@@ -72,8 +70,7 @@ def compile_recipe_content(recipe_content: str) -> str:
 
 def parse_steps(steps: List[dict]) -> List[Step]:
     '''
-    `parse_steps` monta uma lista de Step a partir de um
-    array de dicionários com a forma de um step.
+    `parse_steps` creates a list of steps from an array of steps.
     '''
     mounted_steps: List[Step] = []
 
@@ -101,8 +98,7 @@ def parse_steps(steps: List[dict]) -> List[Step]:
 
 def parse_recipe(repository: Repository) -> Recipe:
     '''
-    `parse_recipe` recebe um `repository`, recupera sua recipe e retorna um objeto
-    do tipo `Recipe`.
+    `parse_recipe` receives a `repository`, compile its recipe and returns it
     '''
     recipe_content = load_recipe_content_from(repository=repository)
     recipe_content = compile_recipe_content(recipe_content=recipe_content)
@@ -120,8 +116,8 @@ def parse_recipe(repository: Repository) -> Recipe:
 
 def is_requirement_satisfied(requirement: Requirement) -> bool:
     '''
-    `is_requirement_satisfied` verifica se um requisito está instalado
-    na máquina do usuário.
+    `is_requirement_satisfied` checks if a requirement is satisfied
+    on user's machine
     '''
     requirement_installed = find_executable(requirement.name) is not None
 
@@ -130,7 +126,8 @@ def is_requirement_satisfied(requirement: Requirement) -> bool:
 
 def execute_step(step: Step, repository: Repository) -> bool:
     '''
-    `execute_step` executa um passo definido no recipe do repositório template.
+    `execute_step` executes a step defined in cocinero recipe
+    that is defined in the repository.
     '''
 
     step_func = getattr(plugins, step.plugin_name)

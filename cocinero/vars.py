@@ -3,8 +3,8 @@ import os
 
 def get_cocinero_vars():
     '''
-    `get_cocinero_vars` retorna todas as variáveis de ambiente que foram
-    definidas na inicialização do CLI.
+    `get_cocinero_vars` returns all environment variables that
+    are defined on CLI initialization.
     '''
     return {
         'project_name': os.environ.get('COCINERO_PROJECT_NAME'),

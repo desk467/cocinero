@@ -17,7 +17,7 @@ def cli():
 @click.argument('project_name', default='my_awesome_project')
 def cook(repository_url, project_name):
     '''
-    Gera um novo projeto a partir de um template
+    Creates a new project by using a repository template
     '''
 
     os.environ['COCINERO_REPOSITORY_URL'] = repository_url

@@ -4,9 +4,8 @@ import subprocess
 
 def exec_command(commands: List[str], parser_func: Callable):
     '''
-    `exec_command` executa um comando passado, junto com seus argumentos
-    transforma a saída em um objeto, usando a `parser_func` passada
-    e retorna.
+    `exec_command` runs a command passed with its args and transform its outputs
+    by using a `parser_func` passed.
 
     '''
     process = subprocess.Popen(
